@@ -141,41 +141,52 @@ CURRÍCULO:
 # 🔵 COMPARAR CURRÍCULO COM VAGA
 # =========================================================
 def compare_with_job(resume: str, job: str):
-    prompt = f"""
-Você é um avaliador técnico de currículos.
+    # 🔥 pesos (pode evoluir depois)
+    weights = {
+        "python": 30,
+        "fastapi": 25,
+        "docker": 20,
+        "testes": 15,
+        "aws": 10
+    }
 
-Compare o currículo com a vaga.
+    resume_lower = resume.lower()
+    job_lower = job.lower()
 
-REGRAS:
-- Comece com 100 pontos
-- Para cada requisito obrigatório faltante, subtraia entre 20 e 30 pontos
-- Para cada requisito desejável faltante, subtraia entre 5 e 15 pontos
-- Considere sinônimos (ex: FastAPI conta como experiência em APIs)
-- Considere contexto (APIs REST ≈ backend)
-- O match final deve ser um número entre 0 e 100
+    match_score = 0
 
-CLASSIFICAÇÃO:
-- Requisitos obrigatórios: essenciais para a vaga
-- Requisitos desejáveis: diferenciais
+    pontos_fortes = []
+    faltando_obrigatorio = []
+    faltando_desejavel = []
 
-RESPONDA SOMENTE EM JSON VÁLIDO.
+    explicacao = []
 
-Formato obrigatório:
-{{
-  "match": número,
-  "faltando_obrigatorio": [],
-  "faltando_desejavel": [],
-  "pontos_fortes": [],
-  "resumo": ""
-}}
+    for skill, weight in weights.items():
+        if skill in job_lower:
+            if skill in resume_lower:
+                match_score += weight
+                pontos_fortes.append(skill)
+                explicacao.append(f"{skill} (+{weight}%)")
+            else:
+                # 🔥 regra simples: obrigatório vs desejável
+                if skill in ["python", "fastapi", "docker"]:
+                    faltando_obrigatorio.append(skill)
+                else:
+                    faltando_desejavel.append(skill)
 
-CURRÍCULO:
-{resume}
+    # 🔥 limitar em 100
+    match_score = min(match_score, 100)
 
-VAGA:
-{job}
-"""
+    resumo = (
+        f"Match baseado em pesos. Pontos fortes: {', '.join(pontos_fortes)}. "
+        f"Faltando: {', '.join(faltando_obrigatorio + faltando_desejavel)}."
+    )
 
-    response = llm.invoke(prompt)
-
-    return extract_json(response.content)
+    return {
+        "match": match_score,
+        "faltando_obrigatorio": faltando_obrigatorio,
+        "faltando_desejavel": faltando_desejavel,
+        "pontos_fortes": pontos_fortes,
+        "explicacao": explicacao,
+        "resumo": resumo
+    }
