@@ -18,3 +18,4 @@ def questions(req: ResumeRequest):
 @router.post("/interview/evaluate")
 def evaluate(req: AnswerRequest):
     return evaluate_answer(req.question, req.answer)
+

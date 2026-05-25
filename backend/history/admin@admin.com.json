@@ -1,0 +1,14 @@
+[
+  {
+    "role": "user",
+    "content": "Qual o nome do candidato?"
+  },
+  {
+    "role": "user",
+    "content": "Qual o nome do candidato?"
+  },
+  {
+    "role": "user",
+    "content": "Quais habilidades o candidato possui?"
+  }
+]

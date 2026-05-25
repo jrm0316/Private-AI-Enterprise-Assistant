@@ -5,8 +5,23 @@ from services.ai_service import analyze_resume
 router = APIRouter()
 
 class AnalyzeRequest(BaseModel):
-    resume: str
+    text: str
 
 @router.post("/analyze")
 def analyze(req: AnalyzeRequest):
-    return analyze_resume(req.resume)
+
+    try:
+        result = analyze_resume(req.text)
+
+        return {
+            "success": True,
+            "data": result,
+            "error": None
+        }
+
+    except Exception as e:
+        return {
+            "success": False,
+            "data": None,
+            "error": str(e)
+        }

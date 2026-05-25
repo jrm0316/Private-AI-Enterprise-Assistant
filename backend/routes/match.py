@@ -9,5 +9,11 @@ class MatchRequest(BaseModel):
     job: str
 
 @router.post("/match")
-def match(req: MatchRequest):
-    return compare_with_job(req.resume, req.job)
+def match(data: MatchRequest):
+
+    result = compare_with_job(
+        data.resume,
+        data.job
+    )
+
+    return result
