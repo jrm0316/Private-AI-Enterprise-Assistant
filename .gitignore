@@ -1,0 +1,17 @@
+venv/
+backend/venv/
+frontend/venv/
+
+__pycache__/
+*.pyc
+
+.env
+
+vectorstores/
+chat_history/
+
+.idea/
+.vscode/
+
+*.faiss
+*.pkl
