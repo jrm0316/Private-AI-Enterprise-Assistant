@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "filename": "curriculo.txt",
+    "uploaded_at": "2026-05-26 23:23:13.251910",
+    "chunks": 1,
+    "pages": 1
+  },
+  {
+    "filename": "vaga.txt",
+    "uploaded_at": "2026-05-26 23:23:13.252303",
+    "chunks": 1,
+    "pages": 1
+  }
+]

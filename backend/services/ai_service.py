@@ -377,24 +377,14 @@ Contexto:
 Pergunta:
 {question}
 """
+        print("ANTES DO LLM")
 
         response = llm.invoke(prompt)
 
+        print("DEPOIS DO LLM")
         # =========================
         # SAVE HISTORY
         # =========================
-
-        history.append({
-            "role": "user",
-            "content": question
-        })
-
-        history.append({
-            "role": "assistant",
-            "content": response.content
-        })
-
-        save_chat_history(user_id, history)
 
         # =========================
         # SOURCES
@@ -466,3 +456,27 @@ Pergunta:
             "sources": [],
             "error": str(e)
         }
+
+def compare_with_job(*args, **kwargs):
+
+    return {
+        "answer": "Função temporária.",
+        "confidence": 0,
+        "sources": []
+    }
+
+def generate_questions(*args, **kwargs):
+
+    return {
+        "questions": [
+            "Função temporariamente desativada."
+        ]
+    }
+
+
+def evaluate_answer(*args, **kwargs):
+
+    return {
+        "score": 0,
+        "feedback": "Função temporariamente desativada."
+    }

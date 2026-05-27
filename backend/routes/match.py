@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
-from services.ai_service import compare_with_job
+from services.ai_service import compare_documents
 
 router = APIRouter()
 
@@ -11,7 +11,7 @@ class MatchRequest(BaseModel):
 @router.post("/match")
 def match(data: MatchRequest):
 
-    result = compare_with_job(
+    result = compare_documents(
         data.resume,
         data.job
     )

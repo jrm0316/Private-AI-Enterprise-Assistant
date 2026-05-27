@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
-from services.ai_service import analyze_resume
+from services.ai_service import compare_documents
 
 router = APIRouter()
 
@@ -11,7 +11,7 @@ class AnalyzeRequest(BaseModel):
 def analyze(req: AnalyzeRequest):
 
     try:
-        result = analyze_resume(req.text)
+        response = compare_documents(req.text)
 
         return {
             "success": True,

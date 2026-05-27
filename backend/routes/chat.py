@@ -10,12 +10,6 @@ from auth.auth_bearer import (
     get_current_user
 )
 
-# 👇 ADICIONE AQUI
-from routes.history import (
-    get_history,
-    save_message
-)
-
 router = APIRouter()
 
 class ChatRequest(BaseModel):
@@ -36,22 +30,7 @@ def chat(
         # LOAD HISTORY
         # =========================
 
-        history_response = get_history(request)
-
-        history = history_response.get(
-            "data",
-            []
-        )
-
-        # =========================
-        # SAVE USER MESSAGE
-        # =========================
-
-        save_message(
-            user_id,
-            "user",
-            req.question
-        )
+        history = load_chat_history(user_id)
 
         # =========================
         # AI RESPONSE
@@ -62,16 +41,6 @@ def chat(
             req.question,
             history,
             req.selected_document
-        )
-
-        # =========================
-        # SAVE ASSISTANT MESSAGE
-        # =========================
-
-        save_message(
-            user_id,
-            "assistant",
-            result["answer"]
         )
 
         return {

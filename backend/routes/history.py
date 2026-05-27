@@ -1,44 +1,15 @@
-from fastapi import APIRouter, Depends, Request
-from auth.auth_bearer import JWTBearer, get_current_user
-
+from fastapi import APIRouter, Request, Depends
 import os
 import json
 
+from auth.auth_bearer import (
+    JWTBearer,
+    get_current_user
+)
+
 router = APIRouter()
 
-HISTORY_DIR = "history"
-
-os.makedirs(HISTORY_DIR, exist_ok=True)
-
-# =========================
-# GET HISTORY
-# =========================
-@router.get(
-    "/history",
-    dependencies=[Depends(JWTBearer())]
-)
-def get_history(request: Request):
-
-    user_id = get_current_user(request)
-
-    history_path = os.path.join(
-        HISTORY_DIR,
-        f"{user_id}.json"
-    )
-
-    if not os.path.exists(history_path):
-        return {
-            "success": True,
-            "data": []
-        }
-
-    with open(history_path, "r", encoding="utf-8") as f:
-        messages = json.load(f)
-
-    return {
-        "success": True,
-        "data": messages
-    }
+CHAT_HISTORY_DIR = "chat_history"
 
 # =========================
 # CLEAR HISTORY
@@ -51,58 +22,18 @@ def clear_history(request: Request):
 
     user_id = get_current_user(request)
 
-    history_path = os.path.join(
-        HISTORY_DIR,
+    user_file = os.path.join(
+        CHAT_HISTORY_DIR,
         f"{user_id}.json"
     )
 
-    if os.path.exists(history_path):
-        os.remove(history_path)
+    # APAGA HISTÓRICO
+    if os.path.exists(user_file):
+
+        with open(user_file, "w", encoding="utf-8") as f:
+            json.dump([], f)
 
     return {
         "success": True,
         "message": "Histórico apagado"
     }
-
-# =========================
-# SAVE MESSAGE
-# =========================
-
-def save_message(user_id, role, content):
-
-    history_path = os.path.join(
-        HISTORY_DIR,
-        f"{user_id}.json"
-    )
-
-    messages = []
-
-    # =========================
-    # LOAD EXISTING
-    # =========================
-
-    if os.path.exists(history_path):
-
-        with open(history_path, "r", encoding="utf-8") as f:
-            messages = json.load(f)
-
-    # =========================
-    # APPEND
-    # =========================
-
-    messages.append({
-        "role": role,
-        "content": content
-    })
-
-    # =========================
-    # SAVE
-    # =========================
-
-    with open(history_path, "w", encoding="utf-8") as f:
-        json.dump(
-            messages,
-            f,
-            ensure_ascii=False,
-            indent=2
-        )
